@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="STDOUT"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{dd MMM HH:mm:ss.SSS} %-5level %C{0} %M %msg%n</pattern>
+            <!-- this quadruples logging throughput -->
+            <immediateFlush>false</immediateFlush>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+  <appender name="Splunk"
+            class="com.splunk.logging.HttpEventCollectorLogbackAppender">
+    <url>http://dell-4290.local:8088</url>
+    <token>1c6286eb-2de7-4646-a493-bcdbbe59a644</token>
+    <!--  hostname is defined via MDC in ApplicationMain  -->
+    <source>${hostname}</source>
+    <sourcetype>${BRANCH}</sourcetype>
+    <batch_size_count>5</batch_size_count>
+    <disableCertificateValidation>true</disableCertificateValidation>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>{ %M: '%msg' }</pattern>
+    </layout>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>DEBUG</level>
+    </filter>
+  </appender>
+
+    <root level="DEBUG">
+      <appender-ref ref="STDOUT" />
+      <appender-ref ref="Splunk" />
+    </root>
+
+</configuration>
