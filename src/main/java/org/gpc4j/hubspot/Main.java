@@ -46,17 +46,18 @@ public class Main {
   public static void main(String[] args) throws IOException {
     LOG.info("Running...");
 
-    ObjectMapper mapper = new ObjectMapper();
+//    ObjectMapper mapper = new ObjectMapper();
 
     Client client = ClientBuilder.newClient();
     WebTarget target = client.target(SOURCE);
     Response response = target.request(MediaType.MEDIA_TYPE_WILDCARD).get();
+    LOG.info("response = " + response);
 
     Inbound inbound = response.readEntity(Inbound.class);
 //    InputStream iStream = Main.class.getResourceAsStream("/inbound.json");
 //    Inbound inbound = mapper.readValue(iStream, Inbound.class);
 
-    LOG.info("inbound = " + inbound);
+//    LOG.info("inbound = " + inbound);
 
     final List<Partner> partners = inbound.getPartners();
 
@@ -65,7 +66,7 @@ public class Main {
         .map(p -> p.getCountry())
         .collect(Collectors.toSet());
 
-    LOG.info("countryNames = " + countryNames);
+    LOG.debug("countryNames = " + countryNames);
 
     // Possible dates for each country
     final Map<String, Set<LocalDate>> possibleDates = new HashMap<>();
@@ -125,10 +126,10 @@ public class Main {
       }
     }
 
-    // For each country, get the highest attendence event
+    // For each country, get the highest attendance event
     Outbound outbound = new Outbound();
     for (String countryName : countryNames) {
-      Country best = countries.stream()
+      Country best = countries.parallelStream()
           .filter(c -> c.getName().equals(countryName))
           .reduce((c1, c2) -> {
             if (c1.getAttendees().size() > c2.getAttendees().size()) {
@@ -158,6 +159,7 @@ public class Main {
 //
 //    System.out.println(json);
 
+    LOG.info("Processing complete.");
     client = ClientBuilder.newClient();
     target = client.target(DESTINATION);
     Invocation.Builder invocationBuilder = target.request(MediaType.APPLICATION_JSON);
