@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class Main {
     LOG.info("countryNames = " + countryNames);
 
     // Possible dates for each country
-    final Map<String, List<LocalDate>> possibleDates = new HashMap<>();
+    final Map<String, Set<LocalDate>> possibleDates = new HashMap<>();
 
     // Possible Partners for each country
     final Map<String, List<Partner>> partnersByCountry = new HashMap<>();
@@ -76,9 +77,9 @@ public class Main {
       final String countryName = partner.getCountry();
 
       // Initialize country for available dates
-      possibleDates.putIfAbsent(countryName, new LinkedList<>());
+      possibleDates.putIfAbsent(countryName, new HashSet<>());
 
-      List<LocalDate> dates = possibleDates.get(countryName);
+      Set<LocalDate> dates = possibleDates.get(countryName);
       for (String availableDate : partner.getAvailableDates()) {
         dates.add(LocalDate.parse(availableDate, DTF));
       }
