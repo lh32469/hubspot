@@ -2,6 +2,7 @@ package org.gpc4j.hubspot.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -13,10 +14,11 @@ public class Country {
   private String name;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate startDate;
-  private List<String> attendees = new LinkedList<>();
+  @Getter(lazy=true)
+  private final List<String> attendees = new LinkedList<>();
 
   public long getAttendeeCount() {
-    return attendees.size();
+    return getAttendees().size();
   }
 
 }
