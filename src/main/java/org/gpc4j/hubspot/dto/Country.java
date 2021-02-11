@@ -13,7 +13,6 @@ public class Country {
   private String name;
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate startDate;
-  private long attendeeCount;
   private List<String> attendees = new LinkedList<>();
 
   public long getAttendeeCount() {
